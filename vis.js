@@ -26,6 +26,7 @@ d3.csv("pp-links.csv", function(error, links) {
 
     // Extract the array of nodes from the map by name.
     var nodes = d3.values(nodesByName);
+    var weightScale = d3.scaleLinear([1, 100], [4, 20]);
 
 
     // Create the link lines.
@@ -45,18 +46,32 @@ d3.csv("pp-links.csv", function(error, links) {
         })
         .call(force.drag);
 
+        node.on("mouseover", function(d) {
+          d3.select(this).transition()
+          .duration(100)
+          .attr("r", function(d) {
+            return  weightScale(d.weight) * 2
+          });
+        })
+        .on('mouseout', function(d) {
+          d3.select(this).transition()
+          .duration(100)
+          .attr("r", function(d) {
+            return  weightScale(d.weight)
+          });
+        })
+
 
     // Start the force layout.
     force
         .nodes(nodes)
         .links(links)
         .charge(-200)
-        .linkDistance(150)
+        .linkDistance(250)
         .on("tick", tick)
         .start();
 
 
-    var weightScale = d3.scaleLinear([1, 100], [4, 40]);
 
 
     function tick() {
