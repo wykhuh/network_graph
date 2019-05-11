@@ -13,20 +13,26 @@ var force = d3.layout.force()
 d3.csv("pp-links.csv", function(error, links) {
   if (error) throw error;
 
+  console.log(links)
+
   d3.csv("pp-points.csv", function(error, rawNodes) {
     if (error) throw error;
+
+    var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
 
     var nodesByName = {};
 
     // Create nodes for each unique source and target.
     links.forEach(function(link) {
-      link.source = nodeByName(rawNodes, link.Source);
-      link.target = nodeByName(rawNodes, link.Sink);
+      link.source = nodeByName(rawNodes, link.source);
+      link.target = nodeByName(rawNodes, link.target);
     });
 
     // Extract the array of nodes from the map by name.
     var nodes = d3.values(nodesByName);
-    var weightScale = d3.scaleLinear([1, 100], [4, 20]);
+    var weightScale = d3.scaleLinear([1, 100], [4, 32]);
 
 
     // Create the link lines.
@@ -49,16 +55,40 @@ d3.csv("pp-links.csv", function(error, links) {
         node.on("mouseover", function(d) {
           d3.select(this).transition()
           .duration(100)
-          .attr("r", function(d) {
-            return  weightScale(d.weight) * 2
-          });
+          .style('stroke', '#FF0000')
+          .attr("stroke-width", 3)
+
+
+          tooltip.transition()
+          .duration(200)
+          .style('opacity', 1);
+
+          let related = links.filter(link => {
+            return link.source.name == d.name
+          })
+          .map(link => {
+            return link.target.name
+          })
+
+          let content = '<div class="tooltip">'
+          content += '<p>' + d.name + '</p>';
+          content += '<p>' + related.length + ' connections</p>'
+          content += related.join(', ')
+          content += '</div>'
+
+          tooltip.html(content)
+              .style("left", "10px")
+              .style("top", "10px");
         })
         .on('mouseout', function(d) {
           d3.select(this).transition()
           .duration(100)
-          .attr("r", function(d) {
-            return  weightScale(d.weight)
-          });
+          .style('stroke', '#fff')
+          .attr("stroke-width", 1)
+
+          tooltip.transition()
+          .duration(500)
+          .style("opacity", 0);
         })
 
 

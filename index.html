@@ -2,19 +2,32 @@
 <meta charset="utf-8">
 <style>
   .link {
-    stroke: #aaa;
+    stroke: #ccc;
   }
 
   .node {
     stroke: #fff;
+    fill: #555;
   }
+
+  .tooltip {
+    position: absolute;
+    text-align: center;
+    width: 200px;
+    padding: 2px;
+    font: 16px sans-serif;
+    background: #fff;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
 
 </style>
 
 <body>
   <script src="//d3js.org/d3.v3.min.js"></script>
   <script src="https://d3js.org/d3-scale.v3.min.js"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.0/jquery.min.js"></script>
   <script src="vis.js"></script>
 </body>
 
